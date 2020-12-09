@@ -1,4 +1,4 @@
-# esse é o meu rpg
+# esse é o meu rpg, eu me esforcei muito
 
 import random, os, equip_item, emojis
 from armor import *
