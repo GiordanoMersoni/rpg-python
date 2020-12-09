@@ -1,3 +1,5 @@
+# esse é o meu rpg
+
 import random, os, equip_item, emojis
 from armor import *
 from weapon import *
