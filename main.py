@@ -7,9 +7,6 @@ from char import *
 from copy import deepcopy, copy
 from terminedia import getch
 
-#cmd = 'mode 160,30'
-#os.system(cmd)
-
 inimigo = emojis.encode(':japanese_ogre:')
 player_character = emojis.encode(':running:')
 chest = emojis.encode(':package:')
@@ -177,14 +174,120 @@ def talk_to_blacksmith(char):
         print('')
         print('       FERREIRO')
         print('')
-        print('1 - Forjar Equipamento')
+        print('1 - Melhorar Equipamento')
         print('2 - Vender Equipamento')
         print('3 - Comprar Equipamento')
         print('4 - Sair')
         print('')
         choice = int(input('Escolha sua opção: '))
         if choice == 1:
-            pass
+            while True:
+                os.system('cls')
+                cab()
+                print('')
+                print('    MELHORAR EQUIPAMENTO')
+                print('')
+                print('1 - Melhorar arma equipada')
+                print('2 - Melhorar armadura equipada')
+                print('3 - Sair')
+                print('')
+                opc = int(input('Escolha sua opção: '))
+                if opc == 1:
+                    os.system('cls')
+                    cab()
+                    print('')
+                    print(f'Selecione arma idêntica à {char.weapon.getName()} para usar como material de melhoramento de arma')
+                    print('')
+                    cont = 0
+                    while cont < len(weapon_list):
+                        print(cont, '-', weapon_list[cont].getName())
+                        cont += 1
+                    print(cont, '- SAIR')
+                    print('')
+                    while True: 
+                        melhorar = int(input('Selecionar arma: '))
+                        if melhorar >= 0 and melhorar < len(weapon_list):
+                            if weapon_list[melhorar].getName() == char.weapon.getName():
+                                del weapon_list[melhorar]
+                                if char.weapon.getName() == 'Starter Axe':
+                                    char.setWeapon(decentAxe)
+                                    print('Arma Melhorada')
+                                    os.system('pause')
+                                    break                                    
+                                elif char.weapon.getName() == 'Decent Axe':
+                                    char.setWeapon(top_axe)
+                                    print('Arma Melhorada')
+                                    os.system('pause')
+                                    break                                    
+                                elif char.weapon.getName() == 'Starter Bow':
+                                    char.setWeapon(decentBow)
+                                    print('Arma Melhorada')
+                                    os.system('pause')
+                                    break                                    
+                                elif char.weapon.getName() == 'Decent Bow':
+                                    char.setWeapon(top_bow)
+                                    print('Arma Melhorada')
+                                    os.system('pause')
+                                    break                                    
+                                elif char.weapon.getName() == 'Starter Spear':
+                                    char.setWeapon(decentSpear)
+                                    print('Arma Melhorada')
+                                    os.system('pause')
+                                    break                                    
+                                elif char.weapon.getName() == 'Decent Spear':
+                                    char.setWeapon(top_spear)
+                                    print('Arma Melhorada')
+                                    os.system('pause')
+                                    break                                    
+ 
+                            else:
+                                print('Arma selecionada não é idêntica à arma equipada')
+                                os.system('pause')
+                        elif melhorar == len(weapon_list):
+                            break
+                        else:
+                            print('Inválido')
+                            os.system('pause')
+                elif opc == 2:
+                    os.system('cls')
+                    cab()
+                    print('')
+                    print(f'Selecione armadura idêntica à {char.armor.getName()} para usar como material de melhoramento de armadura')
+                    print('')
+                    cont = 0
+                    while cont < len(armor_list):
+                        print(cont, '-', armor_list[cont].getName())
+                        cont += 1
+                    print(cont, '- SAIR')
+                    print('')
+                    while True: 
+                        melhorar = int(input('Selecionar armadura: '))
+                        if melhorar >= 0 and melhorar < len(armor_list):
+                            if armor_list[melhorar].getName() == char.armor.getName():
+                                del armor_list[melhorar]
+                                if char.armor.getName() == 'Starter Armor':
+                                    char.setArmor(decentArmor)
+                                    print('Armadura Melhorada')
+                                    os.system('pause')
+                                    break                                    
+                                elif char.armor.getName() == 'Decent Armor':
+                                    char.setArmor(top_armor)
+                                    print('Armadura Melhorada')
+                                    os.system('pause')
+                                    break                                     
+                            else:
+                                print('Armadura selecionada não é idêntica à armadura equipada')
+                                os.system('pause')
+                        elif melhorar == len(armor_list):
+                            break
+                        else:
+                            print('Inválido')
+                            os.system('pause')
+                elif opc == 3:
+                    break
+                else:
+                    print('Opção inválida')
+                    os.system('pause')
         elif choice == 2:
             while True:
                 os.system('cls')
