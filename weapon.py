@@ -39,6 +39,10 @@ decentBow = Bow('Decent Bow', 550, 14)
 
 decentSpear = Spear('Decent Spear', 550, [11, 16])
 
+top_axe = Axe('Impressive Axe', 950, [12, 21])
 
+top_bow = Bow('Impressive Bow', 950, 18)
+
+top_spear = Spear('Impressive Spear', 950, [14, 19])
 
 

@@ -16,3 +16,5 @@ class Armor(Equip_item):
 starterArmor = Armor('Starter Armor', 350, (0, 4))
 
 decentArmor = Armor('Decent Armor', 550, (2, 6))
+
+top_armor = Armor('Impressive Armor', 950, (5, 9))
