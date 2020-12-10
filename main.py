@@ -52,6 +52,7 @@ def cab():
     print((' ' * 18), 'WORK IN PROGRESS')
     print((' ' * 13), '<<>>~~~~~~<<>>^~~~~~~<<>>')
     print('')
+    print('                    ', moneybag, cash[0])
 # ------------------------------------------------------------- #
 def bs(char1, char2):
     print('')
@@ -497,7 +498,26 @@ def talk_to_blacksmith(char):
                             print('Opção inválida')
                             os.system('pause')
                 elif opc == 3:
-                    pass
+                    while True:
+                        os.system('cls')
+                        cab()
+                        print('')
+                        print('   COMPRAR POÇÕES')
+                        print('Preço - 50/un')
+                        print('')
+                        quant = int(input('Digite a quantidade de poções a serem compradas (0 para sair): '))
+                        if quant == 0:
+                            break
+                        else:
+                            if cash[0] >= quant * 50:
+                                cash[0] -= quant * 50
+                                life_potion[0] += quant
+                                print(f'{quant} poções compradas')
+                                os.system('pause')
+                                break
+                            else:
+                                print('Moedas insuficientes')
+                                os.system('pause')
                 elif opc == 4:
                     break
                 else:
@@ -753,7 +773,6 @@ def start_game(obj_player, spot, board):
     while True:
         os.system('cls')
         cab()
-        print('                    ', moneybag, cash[0])
         print((' ' * 6), 'Mover-se            Usar Poção de Vida - P')
         print((' ' * 6), '   W                   Desequipar Item - R')
         print((' ' * 6), 'A  S  D                   Equipar Item - E')
