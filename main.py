@@ -7,6 +7,8 @@ from char import *
 from copy import deepcopy, copy
 from terminedia import getch
 
+# variáveis que preencherão a matriz/board do jogo e/ou aparecerão na tela como indicadores de status
+
 inimigo = emojis.encode(':japanese_ogre:')
 player_character = emojis.encode(':running:')
 chest = emojis.encode(':package:')
@@ -18,6 +20,7 @@ blacksmith = emojis.encode(':nut_and_bolt:')
 moneybag = emojis.encode(':moneybag:')
 potion = emojis.encode(':wine_glass:')
 
+# coordenadas da matriz/board que serão preenchidas com paredes
 
 wall_list = [[0,7], [0,10], [0,17],
             [1,2], [1,3], [1,4], [1,5], [1,7], [1,9], [1,10], [1,11], [1,12], [1,14], [1,18], [1,20],
@@ -30,22 +33,26 @@ wall_list = [[0,7], [0,10], [0,17],
             [8,1], [8,5], [8,8], [8,11], [8,12], [8,16], [8,18], [8,19], [8,20], [8, 23],
             [9,1], [9,3], [9,5], [9,8], [9,15], [9,20]]
 
+# coordenadas da matriz/board que serão preenchidas com baús e inimigos
+
 chest_list = [[0,11], [1,19], [2,2], [7,4], [7,11], [7,21], [9,4], [9,16], [9,19]]
 
 enemy_list = [[0,2], [0,12], [1,21], [1,22], [3,0], [3,24], [7,24], [8,3], [8,4], [8,21], [9,10], [9,17], [9,18]]
 
-foe_list = [npc1, npc2, npc3]
+foe_list = [npc1, npc2, npc3] # lista de NPC's iniciais (criados no arquivo char)
 
-armor_list = []
-weapon_list = []
-life_potion = [0, 20]
-cash = [0]
+armor_list = [] # inventário de armaduras (inicializado vazio)
+weapon_list = [] # inventário de armas (inicializado vazio)
 
+life_potion = [0, 20] # quantidade de poções que o jogador possui e quantidade de vida restaurada por poção, respectivamente
+cash = [0] # quantidade de moedas que o jogador possui
+
+# dimensões da matriz/board
 linhas = 10
 colunas = 25
 
 # ------------------------------------------------------------- #
-def cab():
+def cab(): # limpa a tela e imprime o cabeçalho do jogo e a quantidade de moedas do jogador 
     os.system('cls')
     print((' ' * 21), 'jogando')
     print((' ' * 13), '<<>>~~~~~~<<>>^~~~~~~<<>>')
@@ -54,7 +61,7 @@ def cab():
     print('')
     print('                    ', moneybag, cash[0])
 # ------------------------------------------------------------- #
-def bs(char1, char2):
+def bs(char1, char2): # imprime na tela a quantidade de vida de ambos os personagens em batalha
     print('')
     print('o-----o o       o      o----o     ^  o--o--o  ^    o       o     o    ^   ')
     print('|       |\     /|      |     \   / \    |    / \   |       |     |   / \  ')
@@ -88,7 +95,7 @@ def cabbs(char1, char2):
     cab()
     bs(char1, char2)
 # ------------------------------------------------------------- #
-def print_board(some_board): # imprimir matriz item por item      
+def print_board(some_board): # imprimir matriz/board item (estética)      
     print(' ', end='')
     print('_' * 50)
     lin = 0
@@ -103,7 +110,7 @@ def print_board(some_board): # imprimir matriz item por item
     print(' ', end='')
     print('T' * 50)
 # ------------------------------------------------------------- #
-def get_random_spot(lin, col):
+def get_random_spot(lin, col): # recebe a quantidade de linhas e colunas de uma matriz e gera uma coordenada aleatória dentro da mesma
     r1 = lin - 1
     r2 = col - 1
     c1 = random.randint(0, r1)
@@ -111,14 +118,14 @@ def get_random_spot(lin, col):
     c = [c1, c2]
     return c
 # ------------------------------------------------------------- #
-def drop(char):
-    reward = random.randint(25, 150)
+def drop(char): # recebe como parâmetro o personagem que morreu e define as recompesas pela vitória
+    reward = random.randint(25, 150) # gera uma quantidade aleatória de moedas para o jogador
     cash[0] += reward
     print('')
     print(f'{char.getName()} largou {reward} moedas')
     print('')
-    drop_list = [char.weapon, char.armor]
-    for item in drop_list:
+    drop_list = [char.weapon, char.armor] # lista os itens equipados pelo persoangem morto
+    for item in drop_list: # cada item equipado tem uma chance de drop 
         rate = random.randint(0, 2)
         if rate == 0:
             if item.type == 'armor':
@@ -127,7 +134,7 @@ def drop(char):
                 weapon_list.append(deepcopy(item))
             print(f'{char.getName()} largou 1 {item.getName()}')
             print('')
-    qtd = random.randint(0, 4)
+    qtd = random.randint(0, 4) # define a quantidade de poções de vida largada pelo personagem
     if qtd == 0:
         pass
     else:
@@ -168,14 +175,13 @@ def open_chest(char):
     print('')
     os.system('pause')
 # ------------------------------------------------------------- #
-def talk_to_blacksmith(char):
+def talk_to_blacksmith(char): # abre o menu do ferreiro recebendo como parâmetro o personagem do jogador
     while True:
-        os.system('cls')
         cab()
         print('')
         print('       FERREIRO')
         print('')
-        print('1 - Melhorar Equipamento')
+        print('1 - Melhorar Equipamento') # melhora somente itens equipados pelo jogador, e não itens do inventário
         print('2 - Vender Equipamento')
         print('3 - Comprar Equipamento')
         print('4 - Sair')
@@ -183,7 +189,6 @@ def talk_to_blacksmith(char):
         choice = int(input('Escolha sua opção: '))
         if choice == 1:
             while True:
-                os.system('cls')
                 cab()
                 print('')
                 print('    MELHORAR EQUIPAMENTO')
@@ -194,22 +199,21 @@ def talk_to_blacksmith(char):
                 print('')
                 opc = int(input('Escolha sua opção: '))
                 if opc == 1:
-                    os.system('cls')
                     cab()
                     print('')
                     print(f'Selecione arma idêntica à {char.weapon.getName()} para usar como material de melhoramento de arma')
                     print('')
                     cont = 0
-                    while cont < len(weapon_list):
+                    while cont < len(weapon_list): # imprime inventário de armas item por item e seu respectivo índice
                         print(cont, '-', weapon_list[cont].getName())
                         cont += 1
                     print(cont, '- SAIR')
                     print('')
                     while True: 
                         melhorar = int(input('Selecionar arma: '))
-                        if melhorar >= 0 and melhorar < len(weapon_list):
-                            if weapon_list[melhorar].getName() == char.weapon.getName():
-                                del weapon_list[melhorar]
+                        if melhorar >= 0 and melhorar < len(weapon_list): # verifica se o índice digitado pelo jogador é válido
+                            if weapon_list[melhorar].getName() == char.weapon.getName(): # verifica se o equipamento selecionado é igual ao equipado
+                                del weapon_list[melhorar] # exclui o item selecionado do inventário
                                 if char.weapon.getName() == 'Starter Axe':
                                     char.setWeapon(decentAxe)
                                     print('Arma Melhorada')
@@ -250,7 +254,6 @@ def talk_to_blacksmith(char):
                             print('Inválido')
                             os.system('pause')
                 elif opc == 2:
-                    os.system('cls')
                     cab()
                     print('')
                     print(f'Selecione armadura idêntica à {char.armor.getName()} para usar como material de melhoramento de armadura')
@@ -291,7 +294,6 @@ def talk_to_blacksmith(char):
                     os.system('pause')
         elif choice == 2:
             while True:
-                os.system('cls')
                 cab()
                 print('')
                 print('    VENDER EQUIPAMENTO')
@@ -349,10 +351,7 @@ def talk_to_blacksmith(char):
                     print('Oção inválida')
                     os.system('pause')
         elif choice == 3:
-
-
             while True:
-                os.system('cls')
                 cab()
                 print('')
                 print('    COMPRAR EQUIPAMENTO')
@@ -365,7 +364,6 @@ def talk_to_blacksmith(char):
                 opc = int(input('Escolha sua opção: '))
                 if opc == 1:
                     while True:
-                        os.system('cls')
                         cab()
                         print('')
                         print('     COMPRAR ARMA')
@@ -458,7 +456,6 @@ def talk_to_blacksmith(char):
                             os.system('pause')
                 elif opc == 2:
                     while True:
-                        os.system('cls')
                         cab()
                         print('')
                         print('     COMPRAR ARMADURA')
@@ -499,7 +496,6 @@ def talk_to_blacksmith(char):
                             os.system('pause')
                 elif opc == 3:
                     while True:
-                        os.system('cls')
                         cab()
                         print('')
                         print('   COMPRAR POÇÕES')
@@ -532,9 +528,8 @@ def talk_to_blacksmith(char):
 
 
 # ------------------------------------------------------------- #
-def equipar(char):
+def equipar(char): # função para equipar itens do inventário 
     while True:
-        os.system('cls')
         cab()
         print('')
         print('1 - Equipar arma')
@@ -542,7 +537,7 @@ def equipar(char):
         print('3 - Sair')
         equip = int(input('Escolha sua opção: '))
         if equip == 1:
-            if char.weapon == None:
+            if char.weapon == None: #verifica se não há algum item já equipado
                 print('')
                 cont = 0
                 while cont < len(weapon_list):
@@ -553,9 +548,9 @@ def equipar(char):
                 while True:
                     selec = int(input('Selecione a arma a ser equipada: '))
                     if selec >= 0 and selec < len(weapon_list):
-                        if weapon_list[selec].type == char.weapon_type:
-                            char.setWeapon(deepcopy(weapon_list[selec]))
-                            del weapon_list[selec]
+                        if weapon_list[selec].type == char.weapon_type: #verifica se a arma selecionada é compatível com a classe do personagem
+                            char.setWeapon(deepcopy(weapon_list[selec])) #equipa a arma selecionada
+                            del weapon_list[selec] #exclui a arma selecionada do inventário
                             print('')
                             print('Arma equipada')
                             print('')
@@ -575,7 +570,7 @@ def equipar(char):
                 print('')
                 os.system('pause')
         elif equip == 2:                
-            if char.armor == None:
+            if char.armor == None: #verifica se não algum armadura já equipada
                 print('')
                 cont = 0
                 while cont < len(armor_list):
@@ -586,8 +581,8 @@ def equipar(char):
                 while True:
                     selec = int(input('Selecione a armadura a ser equipada: '))
                     if selec >= 0 and selec < len(armor_list):
-                        char.setArmor(deepcopy(armor_list[selec]))
-                        del armor_list[selec]
+                        char.setArmor(deepcopy(armor_list[selec])) # equipa a armadura selecionada
+                        del armor_list[selec] #exclui a armadura selecionada do inventário
                         print('')
                         print('Armadura equipada')
                         print('')
@@ -611,9 +606,8 @@ def equipar(char):
             os.system('pause')
 
 # ------------------------------------------------------------- #
-def desequipar(char):
+def desequipar(char): #função para desequipar armas e armaduras
     while True:
-        os.system('cls')
         cab()
         print('')
         print('1 - Desequipar arma')
@@ -621,9 +615,9 @@ def desequipar(char):
         print('3 - Sair')
         desequip = int(input('Escolha sua opção: '))
         if desequip == 1:
-            if char.weapon != None:
-                weapon_list.append(deepcopy(char.weapon))
-                char.setWeapon(None)
+            if char.weapon != None: #verifica se há alguma arma equipada 
+                weapon_list.append(deepcopy(char.weapon)) # aloca no inventário a arma equipada pelo jogador
+                char.setWeapon(None) #define a arma do jogador como NENHUMA
                 print('')
                 print('Arma desequipada')
                 print('')
@@ -635,9 +629,9 @@ def desequipar(char):
                 print('')
                 os.system('pause')
         elif desequip == 2:                
-            if char.armor != None:
-                armor_list.append(deepcopy(char.armor))
-                char.setArmor(None)
+            if char.armor != None: #verifica se há alguma armadura equipada pelo jogador
+                armor_list.append(deepcopy(char.armor)) # aloca no inventário a armadura equipada pelo jogador
+                char.setArmor(None) # define a armadura do jogador como NENHUMA
                 print('')
                 print('Armadura desequipada')
                 print('')
@@ -656,7 +650,7 @@ def desequipar(char):
             os.system('pause')
 
 # ------------------------------------------------------------- #
-def char_selection():
+def char_selection(): # cria e retorna um personagem para o jogador
     print('          Bem vindo')
     print('Digite o nome do seu personagem:')
     char_name = input('>>>> ')
@@ -695,23 +689,23 @@ def char_selection():
     return char
 
 # ------------------------------------------------------------- #
-def batlle(char1, char2):
+def batlle(char1, char2): # batalha de turnos entre dois personagens
 
-    cont = 0
+    cont = 0 # contador que alternará entre 0 e 1, definindo a vez de cada um dos personagens atacar
 
-    while True:
-        if cont == 0:
+    while True: # loop de batalha alternando entre os personagens (break quando algum dos personagens tiver vida <= 0)
+        if cont == 0: # vez do jogador
             cabbs(char1, char2)
             print('1 - Ataque Normal')
             print('2 - Ataque Carregado', end=' ')
-            if char1.weapon_type == 'axe' and char1.getCharge() >= 40:
-                print(f'(Pronto para usar)')
-            elif char1.weapon_type == 'bow' and char1.getCharge() >= 30:
-                print(f'(Pronto para usar)')
-            elif char1.weapon_type == 'spear' and char1.getCharge() >= 22:
-                print(f'(Pronto para usar)')
-            else:
-                print('(Carregando)')
+            if char1.weapon_type == 'axe' and char1.getCharge() >= 40:          #
+                print(f'(Pronto para usar)')                                    #
+            elif char1.weapon_type == 'bow' and char1.getCharge() >= 30:        #
+                print(f'(Pronto para usar)')                                    #     mostra na tela se o ataque carregado está pronto para uso
+            elif char1.weapon_type == 'spear' and char1.getCharge() >= 22:      #
+                print(f'(Pronto para usar)')                                    #
+            else:                                                               #
+                print('(Carregando)')                                           #
             print('3 - Usar Poção')
             print('')
             while True:
@@ -720,7 +714,7 @@ def batlle(char1, char2):
                     char1.getDamage(char2)
                     break
                 elif move == 2:
-                    if char1.charge >= char1.needed_charge:
+                    if char1.charge >= char1.needed_charge: #verifica se o ataque carregado está pronto para uso
                         char1.getUlt(char2)
                         break
                     else:
@@ -728,7 +722,7 @@ def batlle(char1, char2):
                         print('')
                         os.system('pause')
                 elif move == 3:
-                    if life_potion[0] > 0:
+                    if life_potion[0] > 0: #verifica se o jogador possui poções de vida
                         use_potion(char1)
                         break
                     else:
@@ -736,49 +730,43 @@ def batlle(char1, char2):
                         os.system('pause')
                 else:
                     pass
-            if char2.getLife() <= 0:
+            if char2.getLife() <= 0: # verifica ao fim de cada jogada se o NPC está morto
                 print(f'{char2.getName()} morreu')
-                drop(char2)
+                drop(char2)          # caso positivo, chama a função que dropa itens após a batalha
                 os.system('pause')
                 break
             cont = 1
-        elif cont == 1:
-
-
+        elif cont == 1: # vez do NPC
             cabbs(char1, char2)
             print('')
-
-            if char2.charge >= char2.needed_charge:
+            if char2.charge >= char2.needed_charge: #verifica se o ataque carregado do NPC está pronto
                 sorteio = random.randint(1, 7)
                 if sorteio == 5:
                     move = 2 
                 else:
                     move = 1
-
+            else:
+                move = 1
             if move == 1:
                 char2.getDamage(char1)
             elif move == 2:
                 char2.getUlt(char1)
-            
-            if char1.getLife() <= 0:
+            if char1.getLife() <= 0: # verifica a cada jogada se o personagem do jogador está morto
                 print(f'{char1.getName()} morreu')
                 os.system('pause')
                 break
-
-        
             cont = 0
 
 # ------------------------------------------------------------- #
-def start_game(obj_player, spot, board):
-    while True:
-        os.system('cls')
+def start_game(obj_player, spot, board): #função que inicia o jogo
+    while True:   # loop infinito, a cada movimento reseta
         cab()
         print((' ' * 6), 'Mover-se            Usar Poção de Vida - P')
         print((' ' * 6), '   W                   Desequipar Item - R')
         print((' ' * 6), 'A  S  D                   Equipar Item - E')
         print('')
         
-        print(player_character, end='')
+        print(player_character, end='') #imprime na tela a quantidade de vida do personagem do jogador
         qtd_life_heart = player.getLife() // 10
         if player.getLife() % 10 == 0:
             qtd_cracked_heart = 0
@@ -787,8 +775,9 @@ def start_game(obj_player, spot, board):
         qtd_empty_heart = 10 - qtd_life_heart - qtd_cracked_heart
         print(f'{life_heart * qtd_life_heart}{cracked_heart * qtd_cracked_heart}{empty_heart * qtd_empty_heart}', end='                 ')
 
-        print(potion, life_potion[0])
+        print(potion, life_potion[0]) #imprime na tela a quantidade de poções que o jogador possui
 
+        # mostra na tela a arma e armadura equipadas pelo jogador
         if player.weapon != None:
             arma = player.weapon.getName()
         else:
@@ -799,35 +788,34 @@ def start_game(obj_player, spot, board):
             armadura = 'Nenhuma armadura equipada'
         print('     Equipado: ', arma, ' / ', armadura)
         
-        print_board(board)
+        print_board(board) #mostra a matriz/board 
         print('')
         while True:
-            move = getch()
+            move = getch() # identifica a tecla pressionada pelo jogador sem necessitar que pressione enter
             if (move == 'a' or move == 'A') and spot[1] > 0:
-                if board[spot[0]][spot[1] - 1] == '  ':
+                if board[spot[0]][spot[1] - 1] == '  ':  # se o bloco a esquerda do personagem estiver vazio, move o jogador para o mesmo
                     spot[1] -= 1
                     board[spot[0]][spot[1]] = player_character
                     board[spot[0]][spot[1] + 1] = '  '
                     break
-                elif board[spot[0]][spot[1] - 1] == inimigo:
-                    indice = random.randint(0, 2)
-                    enemy = deepcopy(foe_list[indice])
-                    os.system('cls')
+                elif board[spot[0]][spot[1] - 1] == inimigo: # se o bloco a esquerda do personagem possuir um inimigo
+                    indice = random.randint(0, 2)            
+                    enemy = deepcopy(foe_list[indice])       # define aleatorimente a classe do inimigo
                     cab()
                     print(f'Começando batalha com {enemy.getName()}')
                     print('')
                     os.system('pause')
-                    batlle(player, enemy)
-                    if enemy.getLife() <= 0:
+                    batlle(player, enemy)                   # começa batalha
+                    if enemy.getLife() <= 0:                # se o inimigo morrer, exclui o mesmo da matriz/board e move o personagem para o bloco em que o inimigo se encontrava
                         spot[1] -= 1
                         board[spot[0]][spot[1]] = player_character
                         board[spot[0]][spot[1] + 1] = '  '
                     break
-                elif board[spot[0]][spot[1] - 1] == chest:
+                elif board[spot[0]][spot[1] - 1] == chest: # se o bloco a esquerda do personagem passuir um baú, chama a função de gera itens largados pelo bau e exclui o mesmo da matriz/board
                     open_chest(player)
                     board[spot[0]][spot[1] - 1] = '  '
                     break
-                elif board[spot[0]][spot[1] - 1] == blacksmith:
+                elif board[spot[0]][spot[1] - 1] == blacksmith: # se o bloco a esquerda do personagem for o ferreiro, abre o menu do ferreiro
                     talk_to_blacksmith(player)
                     break
             elif (move == 's' or move == 'S') and spot[0] < (linhas - 1): 
@@ -839,7 +827,6 @@ def start_game(obj_player, spot, board):
                 elif board[spot[0] + 1][spot[1]] == inimigo:
                     indice = random.randint(0, 2)
                     enemy = deepcopy(foe_list[indice])
-                    os.system('cls')
                     cab()
                     print(f'Começando batalha com {enemy.getName()}')
                     print('')
@@ -866,7 +853,6 @@ def start_game(obj_player, spot, board):
                 elif board[spot[0]][spot[1] + 1] == inimigo:
                     indice = random.randint(0, 2)
                     enemy = deepcopy(foe_list[indice])
-                    os.system('cls')
                     cab()
                     print(f'Começando batalha com {enemy.getName()}')
                     print('')
@@ -893,7 +879,6 @@ def start_game(obj_player, spot, board):
                 elif board[spot[0] - 1][spot[1]] == inimigo:
                     indice = random.randint(0, 2)
                     enemy = deepcopy(foe_list[indice])
-                    os.system('cls')
                     cab()
                     print(f'Começando batalha com {enemy.getName()}')
                     print('')
@@ -911,22 +896,22 @@ def start_game(obj_player, spot, board):
                 elif board[spot[0] - 1][spot[1]] == blacksmith:
                     talk_to_blacksmith(player)
                     break
-            elif (move == 'p' or move == 'P') and life_potion[0] > 0:
+            elif (move == 'p' or move == 'P') and life_potion[0] > 0: # usa poção de vida caso o jogador possua alguma
                 life_potion[0] -= 1
                 player.recover(life_potion[1])
                 print(player.getName(), 'recuperou', life_potion[1], 'de vida')
                 os.system('pause')
                 break
-            elif (move == 'e' or move == 'E'):
+            elif (move == 'e' or move == 'E'): # chama a função de equipar armas/armaduras
                 equipar(player)
                 break
-            elif (move == 'r' or move == 'R'):
+            elif (move == 'r' or move == 'R'): # chama a função de desequipar armas/armaduras
                 desequipar(player)
                 break
             else:
                 pass
 
-        if player.getLife() <= 0:
+        if player.getLife() <= 0: # a cada movimento do jogador verifica se o mesmo continua vivo, caso contrario quebrao loop e encerra o jogo
             print('')
             print('FIM DE JOGO')
             print('')
@@ -938,17 +923,18 @@ def start_game(obj_player, spot, board):
 
 if __name__ == "__main__":
     os.system("cls")
-    player = char_selection()
+    player = char_selection() # cria o personagem
 
+    #cria a matriz/board
     vetor = ['  '] * colunas
     gameboard = []
     for times in range(linhas):
         gameboard.append(vetor.copy())
 
-    gameboard[0][0] = player_character
-    gameboard[5][1] = blacksmith
+    gameboard[0][0] = player_character # aloca o personagem do jogador no canto superior esquerdo
+    gameboard[5][1] = blacksmith # aloca o ferreiro numa posição pré-definida
     
-
+    #preenche a matriz/board com as paredes, inimigos e baús constados na lista de coordenadas (variáveis globais)
     for lista in wall_list:
         gameboard[lista[0]][lista[1]] = wall
     for lista in chest_list:
@@ -956,9 +942,9 @@ if __name__ == "__main__":
     for lista in enemy_list:
         gameboard[lista[0]][lista[1]] = inimigo
 
-    player_coord = [0, 0]
+    player_coord = [0, 0] #coordenada atual do jogador
 
-    for times in range(5):
+    for times in range(5): # distrubui 5 inimigos em posições aleatórias da matriz/board
         while True:
             coord = get_random_spot(linhas, colunas)
             if gameboard[coord[0]][coord[1]] == '  ':
@@ -967,4 +953,4 @@ if __name__ == "__main__":
             else:
                 pass
 
-    start_game(player, player_coord, gameboard)
+    start_game(player, player_coord, gameboard) # inicia o jogo
